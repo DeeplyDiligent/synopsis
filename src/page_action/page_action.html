@@ -1,0 +1,79 @@
+<!doctype html>
+<head>
+    <title>Synopsis: Your Moodle Hero</title>
+</head>
+<style type="text/css">
+    #mainPopup {
+        margin:5em;
+    }
+    h1 {
+        font-size: 2em;
+    }
+    .smallicon.navicon{
+        height:24px;
+    }
+</style>
+<link rel="stylesheet" href="../../css/bootstrap.min.css" />
+<link rel="stylesheet" href="../../css/mdb.min.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript" src="../../js/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../../js/moment.js"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.14/js/mdb.min.js"></script>
+
+<script type="text/javascript" src="page_action.js"></script>
+
+<div id="mainPopup"></div>
+
+  <!-- Welcome Modal -->
+<div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="exampleModalLabel">Welcome to Synopsis</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            We hope that this is the only moodle page you ever need to see!
+            <br/>
+            <br/>
+            Be sure to <b>pin it as one of your tabs</b> for easy access :) 
+            <br>Study Hard!
+            <br />
+            <br />
+            - Deep Bhattacharyya
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Modal -->
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">Please Update Synopsis</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Please visit Moodle to update Synopsis, since the content on this page may now be out of date. It has not be refreshed for over 2 days.
+                <br />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Ignore</button>
+                <a href='https://moodle.vle.monash.edu/my/'><button type="button" class="btn btn-blue">Open Moodle</button></a>
+            </div>
+            </div>
+        </div>
+    </div>
