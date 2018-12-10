@@ -2,6 +2,39 @@
 // console.log("New item in storage");     console.log(changes); })
 
 
+zip.workerScriptsPath = "../../js/zip.js/";
+
+function downloadSequentially(urls, callback) {
+    let index = 0;
+    let currentId;
+  
+    chrome.downloads.onChanged.addListener(onChanged);
+  
+    next();
+  
+    function next() {
+      if (index >= urls.length) {
+        chrome.downloads.onChanged.removeListener(onChanged);
+        callback();
+        return;
+      }
+      const url = urls[index];
+      index++;
+      if (url) {
+        chrome.downloads.download({
+          url,
+        }, id => {
+          currentId = id;
+        });
+      }
+    }
+  
+    function onChanged({id, state}) {
+      if (id === currentId && state && state.current !== 'in_progress') {
+        next();
+      }
+    }
+}
 
 data = []
 chrome
@@ -28,6 +61,39 @@ chrome
         data = moodleBeastData;
         render(data);
     });
+
+function downloadAllFromId(idOfDiv){
+    idOfColumnToDownload = $(idOfDiv).parent().parent().attr('id');
+
+    function listener(downloadItem, suggest){
+        suggest({filename:idOfColumnToDownload+'/'+downloadItem.filename, conflictAction:'overwrite'});
+        return true;
+    }
+
+    chrome.downloads.onDeterminingFilename.addListener(listener);
+    
+    warning = confirm("This may result in some tabs opening. All pdfs, documents and xlsx files will be immediately "+
+            "downloaded, but folders will open in a new tab. You will need to click 'download folder'"+
+            " in each tab that opens. Are you sure you would like to continue?");
+    $.ajax({url: "https://lms.monash.edu/course/view.php?id=45166", success: function(result){
+        notLoggedIn = (result.includes('Since your browser does not support JavaScript'));
+        if (notLoggedIn){
+            alert('You arent logged in to moodle, please go to moodle and log into your account!')
+        }else if(warning){
+            $('.fa.fa-download').hide();
+            urlsToDownload = []
+            $("#"+idOfColumnToDownload+" img[title=\"File\"]").each(function(i, obj) {
+                if (obj.currentSrc.includes("pdf")||obj.currentSrc.includes("document")||obj.currentSrc.includes("powerpoint")){
+                    urlsToDownload.push(obj.parentNode.href);
+                }
+            });
+            downloadSequentially(urlsToDownload,function(){
+                $('.fa.fa-download').show();
+                chrome.downloads.onDeterminingFilename.removeListener(listener);
+            });
+        }
+   }});
+}
 
 function render(data) {
     console.log('rendering...');
@@ -65,20 +131,33 @@ function render(data) {
                 nameOfSubject = value['expandedname'];
                 var matches = nameOfSubject.match(/\w{3}\d{4}/g);
                 if (matches != null) {
-                    nameOfSubject = matches;
+                    nameOfSubject = matches[0];
                 }
-                column += "<td style='vertical-align:top'>";
-                column += "<h1 style='font-size: 3vw;'>"+nameOfSubject+"</h1>"
+                encodedSubjectName = encodeURI(nameOfSubject);
+                column += "<td style='vertical-align:top' id='"+encodedSubjectName+"'>";
+                column += "<h1 style='font-size: 3vw;'>"+nameOfSubject+"&nbsp;<a title=\"Download All Files (*.pdf, *.docx, *.pptx and folders)\" class='downloadWholeSubject' href='#'>"
+                +"<i style='font-size:2vw' class='fa fa-download' aria-hidden='true'></i></a></h1>"
                 column += value["innerHTML"];
                 column += "</td>";
 
             });
         column+= "</tr></table>";
         $("#mainPopup").append(column);
+
+        //onClick functions
+        $('.downloadWholeSubject').on('click',function(){
+            downloadAllFromId(this)
+        });
+
+        //changing look and opening in new tab
         $(".tree_item.branch").css({display: 'inline-flex'});
         $('#mainPopup td>li>p').css({fontSize:"20px",fontWeight:"bold",color:"black"});
-        $('#mainPopup td>li').css({listStyle:"none"});
-        Array.prototype.slice.call(document.getElementsByTagName("a")).forEach(function(value){value.setAttribute("target","_blank")});
+        $('#mainPopup td li').css({listStyle:"none"});
+        $('#mainPopup ul>li').css({textIndent:"-2em"});
+
+        
+
+        Array.prototype.slice.call(document.querySelectorAll("li a")).forEach(function(value){value.setAttribute("target","_blank")});
     } else {
         $("#mainPopup").html("<h1>Thank you for using Synopsis</h1> <p>Please <a href='https://moodle.vle.mona" +
                 "sh.edu/my/'>Open Moodle</a> so that we can create your very own database!</p>");
