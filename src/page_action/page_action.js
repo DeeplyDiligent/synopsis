@@ -2,8 +2,6 @@
 // console.log("New item in storage");     console.log(changes); })
 
 
-zip.workerScriptsPath = "../../js/zip.js/";
-
 function downloadSequentially(urls, callback) {
     let index = 0;
     let currentId;
@@ -70,22 +68,26 @@ function downloadAllFromId(idOfDiv){
         return true;
     }
 
-    chrome.downloads.onDeterminingFilename.addListener(listener);
     
-    warning = confirm("This may result in some tabs opening. All pdfs, documents and xlsx files will be immediately "+
+    warning = confirm("It is advised that you turn off 'Ask where to save each file before downloading' before proceeding.\n\n"+
+            "This may result in multiple tabs opening. All pdfs, documents and xlsx files will be immediately "+
             "downloaded, but folders will open in a new tab. You will need to click 'download folder'"+
-            " in each tab that opens. Are you sure you would like to continue?");
+            " in each tab that opens. \n\nAre you sure you would like to continue?");
     $.ajax({url: "https://lms.monash.edu/course/view.php?id=45166", success: function(result){
         notLoggedIn = (result.includes('Since your browser does not support JavaScript'));
         if (notLoggedIn){
-            alert('You arent logged in to moodle, please go to moodle and log into your account!')
+            alert('You arent logged in to moodle, please go to moodle and log into your account!');
         }else if(warning){
+            chrome.downloads.onDeterminingFilename.addListener(listener);
             $('.fa.fa-download').hide();
             urlsToDownload = []
             $("#"+idOfColumnToDownload+" img[title=\"File\"]").each(function(i, obj) {
                 if (obj.currentSrc.includes("pdf")||obj.currentSrc.includes("document")||obj.currentSrc.includes("powerpoint")){
                     urlsToDownload.push(obj.parentNode.href);
                 }
+            });
+            $("#"+idOfColumnToDownload+" img[title=\"Folder\"]").each(function(i, obj) {
+                chrome.tabs.create({url: obj.parentNode.href, active: false });
             });
             downloadSequentially(urlsToDownload,function(){
                 $('.fa.fa-download').show();
@@ -104,26 +106,29 @@ function render(data) {
         $(document).ready(function() {
             var isshow = localStorage.getItem('isshow');
             var dataDate = data[Object.keys(data)[0]]['dateCreated'];
+            //showing modal for not been updated for ages and updating timestamp
+            dateNow = moment(new Date());
+            diffDays = moment.duration(dateNow.diff(dataDate)).asDays();
+            console.log('hasnt been updated for: '+diffDays);
             // console.log(isshow);
             if (isshow== null) {
                 //showing modal on first use
                 localStorage.setItem('isshow', 1);
                 $('#welcomeModal').modal('show');
-            } else {
-                //showing modal for not been updated for ages and updating timestamp
-                dateNow = moment(new Date());
-                diffDays = moment.duration(dateNow.diff(dataDate)).asDays();
-                console.log('hasnt been updated for: '+diffDays);
-                if (diffDays>2){
-                    $('#updateModal').modal('show');
-                }
+            } else if (diffDays>2){
+                $('#updateModal').modal('show');
+            } else if (localStorage.getItem('updated')){
+                //show modal after appUpdate
+                $('#appUpdatedModal').modal('show');
+                $('#verNo').html(localStorage.getItem('updated'));
+                localStorage.setItem('updated','');
             }
             $('#mainPopup').append('<h3 style="display:inline-block">Last Updated '+moment(dataDate).fromNow()+'</h3>&emsp;'+
             '<a span title="Sync all from Moodle" href="https://moodle.vle.monash.edu/my/"><i style="font-size:25px" class="fa fa-refresh" aria-hidden="true"></i></a span>'+'<br/>');
         });
 
         var column = ""
-        column+= "<table style='margin-top:20px;width:100%'><tr>"
+        column+= "<table style='border-collapse:separate;border-spacing: 10px;margin-top:20px;width:100%'><tr>"
         Object
             .keys(data)
             .forEach(function (key) {
@@ -154,6 +159,9 @@ function render(data) {
         $('#mainPopup td>li>p').css({fontSize:"20px",fontWeight:"bold",color:"black"});
         $('#mainPopup td li').css({listStyle:"none"});
         $('#mainPopup ul>li').css({textIndent:"-2em"});
+
+        //making all icons same size
+        $('td img').css({width:"24px"});
 
         
 

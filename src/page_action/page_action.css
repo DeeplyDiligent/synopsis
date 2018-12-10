@@ -1,3 +1,6 @@
+/* html {
+    height:100%
+}
 body{
     background: rgb(29,89,194);
     background: linear-gradient(0deg, rgba(29,89,194,0.31556372549019607) 0%, rgba(241,240,255,1) 100%);
@@ -6,3 +9,11 @@ tr>td{
     border-radius:20px;
     background: white;
 }
+
+table td {
+    padding: 21px;
+} */
+
+/* td img {
+    width: 24px;
+} */

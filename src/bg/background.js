@@ -33,22 +33,32 @@ db.settings({
   timestampsInSnapshots: true
 });
 
+//show justUpdated modal if app has been updated
+chrome.runtime.onInstalled.addListener(function(details){
+  if(details.reason == "update"){
+      var thisVersion = chrome.runtime.getManifest().version;
+      localStorage.setItem('updated', thisVersion);
+      console.log('newversion!'+thisVersion)
+  }
+});
 
-chrome
-    .storage
-    .onChanged
-    .addListener(function (changes, namespace) {
-        console.log("change recived!");
-        chrome
-            .storage
-            .local
-            .get(null, function (result) {
-                moodleData = result['MoodleBeast'];
-                db.collection("users").add({
-                  first: "Ada",
-                  last: "Lovelace",
-                  data: moodleData
-                })
+
+
+// chrome
+//     .storage
+//     .onChanged
+//     .addListener(function (changes, namespace) {
+//         console.log("change recived!");
+//         chrome
+//             .storage
+//             .local
+//             .get(null, function (result) {
+//                 moodleData = result['MoodleBeast'];
+//                 db.collection("users").add({
+//                   first: "Ada",
+//                   last: "Lovelace",
+//                   data: moodleData
+//                 })
                 
-            });
-    });
+//             });
+//     });

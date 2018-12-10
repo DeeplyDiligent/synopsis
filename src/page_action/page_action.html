@@ -17,9 +17,6 @@
 <link rel="stylesheet" href="../../css/mdb.min.css" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="./page_action.css">
-<script type="text/javascript" src="../../js/zip.js/zip.js"></script>
-<script type="text/javascript" src="../../js/zip.js/zip-fs.js"></script>
-<script type="text/javascript" src="../../js/zip.js/zip-ext.js"></script>
 <script type="text/javascript" src="../../js/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="../../js/moment.js"></script>
 <!-- Bootstrap tooltips -->
@@ -77,6 +74,31 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-warning" data-dismiss="modal">Ignore</button>
                 <a href='https://moodle.vle.monash.edu/my/'><button type="button" class="btn btn-blue">Open Moodle</button></a>
+            </div>
+            </div>
+        </div>
+    </div>
+
+
+<!-- Just updated Modal -->
+<div class="modal fade" id="appUpdatedModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">Welcome to version&nbsp;<div id='verNo'style='display:contents'></div>&nbsp;of Synopsis!</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                In this update we have fixed the following:
+                <br /><br />
+                <ul>
+                    <li>You can now click cancel on the are you sure prompt for a download, and then try downloading again. Previously, a refresh of the page was required.</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-blue" data-dismiss="modal">Dismiss</button>
             </div>
             </div>
         </div>
