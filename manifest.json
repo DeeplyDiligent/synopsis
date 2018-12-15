@@ -1,7 +1,7 @@
 {
     "name": "Synopsis: Your Moodle Hero",
     "short_name": "Synopsis",
-    "version": "1.82",
+    "version": "2.0.2",
     "manifest_version": 2,
     "description": "This extension lets you create an offline copy of moodle, search for content and seamlessly integrates with your mobile.",
     "content_security_policy": "script-src 'self' https://cdnjs.cloudflare.com https://cdn.firebase.com https://*.firebaseio.com;  object-src 'self'",

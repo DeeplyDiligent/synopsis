@@ -34,6 +34,78 @@ function downloadSequentially(urls, callback) {
     }
 }
 
+function openModal(args){
+    // instanciate new modal
+    link = args.link;
+    var modal = new tingle.modal({
+        footer: true,
+        stickyFooter: true,
+        closeMethods: ['overlay', 'button', 'escape'],
+        closeLabel: "Close"
+    });
+    modal.addFooterBtn('Close Popup', 'tingle-btn tingle-btn--pull-right tingle-btn--secondary', function() {
+        // here goes some logic
+        modal.close();
+    });
+    modal.addFooterBtn('Open in New Tab', 'tingle-btn tingle-btn--pull-right tingle-btn--primary', function() {
+        window.open(link,'_blank');
+        modal.close();
+    });
+
+    // set content
+    modal.setContent('<div id="modal-content">Please Wait...</div>');    
+    // open modal
+    modal.open();
+    $.ajax({
+        url: link,
+        context: document.body
+    })
+    .done(function(data) {
+        $('#modal-content').hide();
+        $('#modal-content').html('');
+        $('#modal-content').append($(data).find('[role*=main]').html())
+        $('#modal-content li').css({marginTop:'20px'});
+        // $('#modal-content').append($(data).find('[role*=main] .section.main .content').eq(1).html())
+        $('#modal-content button').hide();
+        //style options
+        $('#modal-content table td').css({border:"solid 1px"})
+        $('#modal-content table li').css({listStyle:"none"})
+        $('#modal-content table th').css({padding:"10px"})
+        $('#modal-content table td>span').css({display:"block"})
+        $('#modal-content table').css({border:"solid 1px", width:"100%"})
+        $('#modal-content table img').css({width:"24px"});
+        $('#modal-content iframe').css({width:"100%"});
+        $('#modal-content a').attr('target', '_blank');
+        //if not logged in
+        if(data.includes("postLoginSubmitButton")){
+            $('#modal-content').html('<h3>You are not logged in, please log in <a href="https://lms.monash.edu/my/">here</a>!</h3>');
+        }
+        $('#modal-content').slideDown(500,()=>{modal.checkOverflow();});
+    });
+}
+
+function nightMode(futureState){
+    if (futureState==="night"){
+        $('body').css({background:"rgb(35,35,35)"});
+        $('#mainPopup').css({color:"white"});
+        $('#mainPopup p').css({color:"#66b8ffc7"});
+        $('#mainPopup a').css({color:"#66b8ffc7"});
+        $('#night-mode').attr('data','night');
+        $('#night-mode').attr('title','Day Mode');
+        $('#night-mode').find('i').removeClass('fa-moon-o').addClass('fa-sun-o');
+        localStorage.setItem('nightMode','true')
+    } else if (futureState==="day") {
+        $('body').css({background:"white"});
+        $('#mainPopup').css({color:"black"});
+        $('#mainPopup p').css({color:"#007bff"});
+        $('#mainPopup a').css({color:"#007bff"});
+        $('#night-mode').attr('data','day');
+        $('#night-mode').attr('title','Night Mode');
+        $('#night-mode').find('i').removeClass('fa-sun-o').addClass('fa-moon-o');
+        localStorage.setItem('nightMode','')
+    }
+}
+
 data = []
 chrome
     .storage
@@ -59,6 +131,7 @@ chrome
         data = moodleBeastData;
         render(data);
     });
+
 
 function downloadAllFromId(idOfDiv){
     idOfColumnToDownload = $(idOfDiv).parent().parent().attr('id');
@@ -124,7 +197,8 @@ function render(data) {
                 localStorage.setItem('updated','');
             }
             $('#mainPopup').append('<h3 style="display:inline-block">Last Updated '+moment(dataDate).fromNow()+'</h3>&emsp;'+
-            '<a span title="Sync all from Moodle" href="https://moodle.vle.monash.edu/my/"><i style="font-size:25px" class="fa fa-refresh" aria-hidden="true"></i></a span>'+'<br/>');
+            '<a span title="Sync all from Moodle" target="_blank" href="https://moodle.vle.monash.edu/my/"><i style="font-size:25px" class="fa fa-refresh" aria-hidden="true"></i></a span>'+
+            '<a span style="margin-left:10px" data="day" title="Night Mode" id="night-mode" href="#"><i style="font-size:25px" class="fa fa-moon-o" aria-hidden="true"></i></a span><br/>');
         });
 
         var column = ""
@@ -153,19 +227,36 @@ function render(data) {
         $('.downloadWholeSubject').on('click',function(){
             downloadAllFromId(this)
         });
+        $('#night-mode').click(function(){
+            currentState = ($(this).attr('data'));
+            futureState = (currentState==="night")?"day":"night";
+            nightMode(futureState);
+        });
 
         //changing look and opening in new tab
         $(".tree_item.branch").css({display: 'inline-flex'});
         $('#mainPopup td>li>p').css({fontSize:"20px",fontWeight:"bold",color:"black"});
         $('#mainPopup td li').css({listStyle:"none"});
         $('#mainPopup ul>li').css({textIndent:"-2em"});
+        nightMode(localStorage.getItem('nightMode')?"night":"day");
 
         //making all icons same size
-        $('td img').css({width:"24px"});
+        $('td img').css({width:"24px",marginRight:"5px"});
 
+        //making all columns same width
+        $('tr>td').attr('width',(1/$('tr>td').length)*100);
         
-
         Array.prototype.slice.call(document.querySelectorAll("li a")).forEach(function(value){value.setAttribute("target","_blank")});
+        $("li a").on('click',function(event){
+            linkType = $(this).attr('title');
+            isGrades = $(this).text().trim() === "Grades";
+            if (linkType === "Folder"||linkType==="Quiz"|| linkType ==="Assignment"||linkType==="Forum"||isGrades||linkType==="Page"){
+                event.preventDefault();
+                openModal({link:$(this).attr('href')});
+                return false;
+            }
+            return true;
+        });
     } else {
         $("#mainPopup").html("<h1>Thank you for using Synopsis</h1> <p>Please <a href='https://moodle.vle.mona" +
                 "sh.edu/my/'>Open Moodle</a> so that we can create your very own database!</p>");

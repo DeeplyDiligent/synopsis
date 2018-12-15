@@ -17,3 +17,6 @@ table td {
 /* td img {
     width: 24px;
 } */
+body{
+    transition: background 0.5s ease;
+}

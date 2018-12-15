@@ -1,87 +1,91 @@
 <!doctype html>
 <head>
     <title>Synopsis: Your Moodle Hero</title>
+    <link rel="stylesheet" href="../../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../css/mdb.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./page_action.css">
+    <link rel="stylesheet" href="../../css/tingle.min.css" />
+    <meta charset="UTF-8">
+    <style type="text/css">
+        #mainPopup {
+            margin:5em;
+        }
+        h1 {
+            font-size: 2em;
+        }
+        .smallicon.navicon{
+            height:24px;
+        }
+    </style>
 </head>
-<style type="text/css">
-    #mainPopup {
-        margin:5em;
-    }
-    h1 {
-        font-size: 2em;
-    }
-    .smallicon.navicon{
-        height:24px;
-    }
-</style>
-<link rel="stylesheet" href="../../css/bootstrap.min.css" />
-<link rel="stylesheet" href="../../css/mdb.min.css" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="./page_action.css">
-<script type="text/javascript" src="../../js/jquery/jquery.min.js"></script>
-<script type="text/javascript" src="../../js/moment.js"></script>
-<!-- Bootstrap tooltips -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
-<!-- Bootstrap core JavaScript -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
-<!-- MDB core JavaScript -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.14/js/mdb.min.js"></script>
+<body>
+    <script type="text/javascript" src="../../js/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/tingle.min.js"></script>
+    <script type="text/javascript" src="../../js/moment.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.14/js/mdb.min.js"></script>
 
-<script type="text/javascript" src="page_action.js"></script>
+    <script type="text/javascript" src="page_action.js"></script>
 
-<div id="mainPopup"></div>
+    <div id="mainPopup" class="tingle-content-wrapper"></div>
 
-  <!-- Welcome Modal -->
-<div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h3 class="modal-title" id="exampleModalLabel">Welcome to Synopsis</h3>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            We hope that this is the only moodle page you ever need to see!
-            <br/>
-            <br/>
-            Be sure to <b>pin it as one of your tabs</b> for easy access :) 
-            <br>Study Hard!
-            <br />
-            <br />
-            - Deep Bhattacharyya
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-        </div>
-    </div>
-</div>
-
-<!-- Update Modal -->
-<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- Welcome Modal -->
+    <div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="exampleModalLabel">Please Update Synopsis</h3>
+                <h3 class="modal-title" id="exampleModalLabel">Welcome to Synopsis</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                Please visit Moodle to update Synopsis, since the content on this page may now be out of date. It has not be refreshed for over 2 days.
+                We hope that this is the only moodle page you ever need to see!
+                <br/>
+                <br/>
+                Be sure to <b>pin it as one of your tabs</b> for easy access :) 
+                <br>Study Hard!
                 <br />
+                <br />
+                - Deep Bhattacharyya
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" data-dismiss="modal">Ignore</button>
-                <a href='https://moodle.vle.monash.edu/my/'><button type="button" class="btn btn-blue">Open Moodle</button></a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
             </div>
         </div>
     </div>
 
+    <!-- Update Modal -->
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLabel">Please Update Synopsis</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Please visit Moodle to update Synopsis, since the content on this page may now be out of date. It has not be refreshed for over 2 days.
+                    <br />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Ignore</button>
+                    <a target="_blank" href='https://moodle.vle.monash.edu/my/'><button type="button" class="btn btn-blue">Open Moodle</button></a>
+                </div>
+                </div>
+            </div>
+        </div>
 
-<!-- Just updated Modal -->
-<div class="modal fade" id="appUpdatedModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+    <!-- Just updated Modal -->
+    <div class="modal fade" id="appUpdatedModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
             <div class="modal-header">
@@ -91,10 +95,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                In this update we have fixed the following:
+                MAJOR UPDATE! Thank you to everyone that gave us feedback, you've helped make moodle hero better for all!
                 <br /><br />
                 <ul>
-                    <li>You can now click cancel on the are you sure prompt for a download, and then try downloading again. Previously, a refresh of the page was required.</li>
+                    <li>Moodle now opens in a new tab when clicking the refresh button.</li>
+                    <li>Icons and text spacing improved. </li>
                 </ul>
             </div>
             <div class="modal-footer">
@@ -103,3 +108,4 @@
             </div>
         </div>
     </div>
+</body>
