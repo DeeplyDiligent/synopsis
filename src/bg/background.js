@@ -54,7 +54,7 @@ chrome
             .local
             .get(null, function (result) {
 
-                if(result['sendDataOnline']){
+                if(result['sendDataOnline']||false){
 
                   moodleData = result['MoodleBeast'];
                   var dataToSendOnline = {date:new Date()}
