@@ -18,7 +18,7 @@
 
     "default_locale": "en",
     "background": {
-        "scripts": ["src/bg/fb/firebase-app.js","src/bg/fb/firebase-firestore.js","src/bg/background.js"],
+        "scripts": ["js/jquery/jquery.min.js","src/bg/fb/firebase-app.js","src/bg/fb/firebase-firestore.js","src/bg/fb/firebase-auth.js","src/bg/fb/firebaseui.js","src/bg/background.js"],
         "persistent": true
     },
     "permissions": [
@@ -37,7 +37,7 @@
         {
             "matches": ["https://lms.monash.edu/my/","https://lms.monash.edu/my/index.php"],
             "js": ["js/jquery/jquery.min.js", "src/inject/inject.js","js/select2.min.js"],
-            "css": ["css/select2.min.css"]
+            "css": ["css/select2.min.css","css/firebaseui.css"]
         }
     ]
 }

@@ -44,21 +44,52 @@ chrome.runtime.onInstalled.addListener(function(details){
 
 
 
-// chrome
-//     .storage
-//     .onChanged
-//     .addListener(function (changes, namespace) {
-//         console.log("change recived!");
-//         chrome
-//             .storage
-//             .local
-//             .get(null, function (result) {
-//                 moodleData = result['MoodleBeast'];
-//                 db.collection("users").add({
-//                   first: "Ada",
-//                   last: "Lovelace",
-//                   data: moodleData
-//                 })
-                
-//             });
-//     });
+chrome
+    .storage
+    .onChanged
+    .addListener(function (changes, namespace) {
+        console.log("change recived!");
+        chrome
+            .storage
+            .local
+            .get(null, function (result) {
+
+                if(result['sendDataOnline']){
+
+                  moodleData = result['MoodleBeast'];
+                  var dataToSendOnline = {date:new Date()}
+                  Object.keys(moodleData).map(function(i,j){
+                      html = $(moodleData[i]['innerHTML']);
+                      dataToSendOnline[i] = {};
+                      html.find('p .item-content-wrap').each(function(){
+                        childrenIds = $(this).parent().parent().parent().children('ul').children('li').children('p').toArray().map(function(k){return k.id});
+                        elemId = $(this).parent().parent().attr('id')
+                        dataToSendOnline[i][elemId] = {
+                          text:$(this).html(),
+                          children:childrenIds,
+                          img:$(this).siblings('img').attr('src')
+                        }
+                      });
+                  })
+                  console.log('sending data:');
+                  console.log(dataToSendOnline)
+                  if (!localStorage.getItem('userid')){
+
+                    db.collection("dba").add(dataToSendOnline)
+                    .then(function(docRef) {
+                        localStorage.setItem('userid', docRef.id);
+                        console.log('permanentref= '+ docRef.id);
+                    })
+                    
+                  } else {
+
+                    db.collection("dba").doc(localStorage.getItem('userid')).set(moodleData)
+                    .then(function(docRef) {
+                      console.log('successful overwrite: '+localStorage.getItem('userid'));
+                    });
+
+                  }
+                  
+                }               
+            });
+    });

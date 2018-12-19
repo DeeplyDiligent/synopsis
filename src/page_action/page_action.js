@@ -34,6 +34,16 @@ function downloadSequentially(urls, callback) {
     }
 }
 
+function sendDataOnline(value){
+    if (value){
+        console.log('sending data online')
+        chrome.storage.local.set({'sendDataOnline':'true'});
+    } else {
+        chrome.storage.local.set({'sendDataOnline':''});
+    }
+    
+}
+
 function openModal(args){
     // instanciate new modal
     link = args.link;
@@ -129,6 +139,7 @@ chrome
         moodleBeastData = result['MoodleBeast'];
         console.log(moodleBeastData);
         data = moodleBeastData;
+        sendDataOnline('true');
         render(data);
     });
 
