@@ -206,8 +206,7 @@ function render(data,allresultdata) {
                 $('#verNo').html(localStorage.getItem('updated'));
                 localStorage.setItem('updated','');
             }
-            $('#mainPopup').append('<h3 style="display:inline-block">Last Updated '+moment(dataDate).fromNow()+'</h3>&emsp;'+
-            '<a span title="Sync all from Moodle" target="_blank" href="https://moodle.vle.monash.edu/my/"><i style="font-size:25px" class="fa fa-refresh" aria-hidden="true"></i></a span>'+
+            $('#mainPopup').append('<h3 style="display:inline-block">Last Updated '+moment(dataDate).fromNow()+'</h3>'+
             '<a span style="margin-left:10px" data="day" title="Night Mode" id="night-mode" href="#"><i style="font-size:25px" class="fa fa-moon-o" aria-hidden="true"></i></a span>'+
             '<a span style="margin-left:10px" data="day" title="Set Up Cloud Sync" id="cloud-sync" href="#"><i style="font-size:25px" class="fa fa-cloud-upload" aria-hidden="true"></i></a span><br/>');
         });

@@ -36,7 +36,7 @@
     "content_scripts": [
         {
             "matches": ["https://lms.monash.edu/my/","https://lms.monash.edu/my/index.php"],
-            "js": ["js/jquery/jquery.min.js","js/select2.min.js","js/tingle.min.js", "src/inject/inject.js"],
+            "js": ["js/jquery/jquery.min.js","js/select2.min.js","js/tingle.min.js","js/moment.js", "src/inject/inject.js"],
             "css": ["css/select2.min.css","css/firebaseui.css","css/tingle.min.css"]
         }
     ]

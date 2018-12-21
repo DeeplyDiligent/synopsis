@@ -29,6 +29,7 @@ function expandAndCheck(subjects) {
         });
     }
 
+
     timeToWaitForElements = 30;
 
 
@@ -190,27 +191,28 @@ function showSubjectSelector(subjectsSelected) {
         .trigger('change');
         $('.select2-container').attr('style','width:100%!important');
 
-    $("#saveSelection").click(function () {
-        $('#subjects-div').hide();
-        $('#loader').fadeIn();
-        htmlOutput = ($(".js-example-basic-multiple.js-states.form-control").select2('data'));
-        selectedSubjects = [];
+    $("#saveSelection").click(saveSelection);
+}
 
-        htmlOutput.forEach(function (i) {
-            selectedSubjects.push(i['text']);
-        });
+function saveSelection(){
+    $('#subjects-div').hide();
+    $('#loader').fadeIn();
+    htmlOutput = ($(".js-example-basic-multiple.js-states.form-control").select2('data'));
+    selectedSubjects = [];
 
-        console.log(selectedSubjects);
-        chrome
-            .storage
-            .local
-            .set({
-                "subjectsSelected": selectedSubjects
-            }, function () {
-                expandAndCheck(selectedSubjects);
-            });
+    htmlOutput.forEach(function (i) {
+        selectedSubjects.push(i['text']);
     });
 
+    console.log(selectedSubjects);
+    chrome
+        .storage
+        .local
+        .set({
+            "subjectsSelected": selectedSubjects
+        }, function () {
+            expandAndCheck(selectedSubjects);
+        });
 }
 
 function renderPopup(){
@@ -224,12 +226,19 @@ function renderPopup(){
     $('#page').css({padding:"0px", position: "fixed", height: "100%"});
     $('#page-wrapper').css({paddingBottom:"0px",marginBotton:"0px"});
     $('#page-wrapper::after').css({content:"none"});
-    $('#page-footer').css({display:"none"}); //floating change subjects button
-    $('#page-wrapper').append('<a href="#" id="changesubjects" style="position: fixed; width: 170px; transform: translateX(50%); height: 60px; z-index:10000;top: 5px; right: 50%; background-color: #0C9; color: #FFF; border-radius: 50px; text-align: center; box-shadow: 2px 2px 3px #999;" class="float"><div style="margin-top:17px">Change Subjects</div></a>')
+    $('#page-footer').css({display:"none"}); 
+    //floating change subjects button
+    $('#page-wrapper').append('<div id="floatingdivs" style="display:flex;position: fixed;transform: translateX(50%); height: 60px; z-index:10000;top: 5px; right: 50%;"></div>')
+    $('#floatingdivs').append('<a href="#" id="changesubjects" style="width: 150px; height:60px; background-color: #0C9; color: #FFF; border-radius: 50px; text-align: center; box-shadow: 2px 2px 3px #999;" class="float"><div style="margin-top:17px">Change Subjects</div></a>')
+    $('#floatingdivs').append('<a href="#" id="refresh" style="margin-left:15px;width: 110px; height:60px; background-color: #0C9; color: #FFF; border-radius: 50px; text-align: center; box-shadow: 2px 2px 3px #999;" class="float"><div style="margin-top:17px">Refresh</div></a>')
     $('#page').css({width:$('body').width()});
     setInterval(function(){ $('#page').css({width:$('body').width(),height:$('body').height()-72}); }, 200);
     $('#changesubjects').click(function(){
         modal.open()
+    });
+    $('#refresh').click(function(){
+        modal.open()
+        saveSelection();
     });
 
     $("#page").append('<iframe id="pageaction"  style="width:100%; border:none" height="100%" src="'+ chrome.extension.getURL('src/page_action/page_action.html')+'"></iframe>')
@@ -319,6 +328,13 @@ chrome
                         } else if (subjectsSelected != null) {
                             showSubjectSelector(subjectsSelected);
                             modal.close();
+                            if (result['MoodleBeast']){
+                                date = result['MoodleBeast'][Object.keys(result['MoodleBeast'])[0]]['dateCreated']
+                                diffDays = moment.duration(moment(new Date()).diff(date)).asDays();
+                                if(diffDays<0.5){
+                                    return false
+                                };
+                            }
                             expandAndCheck(subjectsSelected);
                         }
                     });
