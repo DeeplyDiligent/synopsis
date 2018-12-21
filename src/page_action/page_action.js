@@ -128,7 +128,7 @@ chrome
             .get(null, function (result) {
                 moodleBeastData = result['MoodleBeast'];
                 data = moodleBeastData;
-                render(data);
+                render(data,result);
             });
     });
 
@@ -139,8 +139,7 @@ chrome
         moodleBeastData = result['MoodleBeast'];
         console.log(moodleBeastData);
         data = moodleBeastData;
-        sendDataOnline('true');
-        render(data);
+        render(data,result);
     });
 
 
@@ -181,7 +180,7 @@ function downloadAllFromId(idOfDiv){
    }});
 }
 
-function render(data) {
+function render(data,allresultdata) {
     console.log('rendering...');
     // console.log(data);
     if (!(typeof data === 'undefined' || data === null)) {
@@ -209,7 +208,8 @@ function render(data) {
             }
             $('#mainPopup').append('<h3 style="display:inline-block">Last Updated '+moment(dataDate).fromNow()+'</h3>&emsp;'+
             '<a span title="Sync all from Moodle" target="_blank" href="https://moodle.vle.monash.edu/my/"><i style="font-size:25px" class="fa fa-refresh" aria-hidden="true"></i></a span>'+
-            '<a span style="margin-left:10px" data="day" title="Night Mode" id="night-mode" href="#"><i style="font-size:25px" class="fa fa-moon-o" aria-hidden="true"></i></a span><br/>');
+            '<a span style="margin-left:10px" data="day" title="Night Mode" id="night-mode" href="#"><i style="font-size:25px" class="fa fa-moon-o" aria-hidden="true"></i></a span>'+
+            '<a span style="margin-left:10px" data="day" title="Set Up Cloud Sync" id="cloud-sync" href="#"><i style="font-size:25px" class="fa fa-cloud-upload" aria-hidden="true"></i></a span><br/>');
         });
 
         var column = ""
@@ -243,7 +243,21 @@ function render(data) {
             futureState = (currentState==="night")?"day":"night";
             nightMode(futureState);
         });
+        $('#cloud-sync').click(function(){
+            if (localStorage.getItem('userid')){
+                window.open('https://moodlehero.net/app/user/'+localStorage.getItem('userid'))
+            } else {
+                sendDataOnline("true");
+            }
+        });
 
+        //if cloud sync enabled
+        console.log(allresultdata['sendDataOnline'])
+        if (allresultdata['sendDataOnline']){
+            $('#cloud-sync').children('i').css({color:"#28a745"});
+            $('#cloud-sync').attr('title','Go To Web App');
+            $('#cloud-sync').attr('data-on','true');
+        }
         //changing look and opening in new tab
         $(".tree_item.branch").css({display: 'inline-flex'});
         $('#mainPopup td>li>p').css({fontSize:"20px",fontWeight:"bold",color:"black"});
@@ -269,8 +283,7 @@ function render(data) {
             return true;
         });
     } else {
-        $("#mainPopup").html("<h1>Thank you for using Synopsis</h1> <p>Please <a href='https://moodle.vle.mona" +
-                "sh.edu/my/'>Open Moodle</a> so that we can create your very own database!</p>");
+        $("#mainPopup").html("<h1>Thank you for using Synopsis</h1> <p>Click 'Change Subjects' above to proceed</p>");
     }
 }
 

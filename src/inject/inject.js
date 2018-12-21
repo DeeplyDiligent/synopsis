@@ -5,6 +5,12 @@
 
 timeouts = [];
 cancelled = false;
+var modal = new tingle.modal({
+    footer: true,
+    stickyFooter: false,
+    closeMethods: ['button'],
+    closeLabel: "Close"
+});
 function remove(array, element) {
     return array.filter(el => el !== element);
 }
@@ -15,6 +21,13 @@ function countUnique(array){
 
   
 function expandAndCheck(subjects) {
+    // add a button ifif modal doesnt have button already
+    if ($('.tingle-btn--primary').length === 0){
+        modal.addFooterBtn('Run in Background', 'tingle-btn tingle-btn--primary', function() {
+            // here goes some logic
+            modal.close();
+        });
+    }
 
     timeToWaitForElements = 30;
 
@@ -27,7 +40,6 @@ function expandAndCheck(subjects) {
                     callBack(elementPath, $(elementPath));
                     console.log('taking out '+parentElement);
                     timeouts = remove(timeouts,parentElement);
-                    console.log(timeouts);
                     if ((timeouts.length) === 0){
                         doneLoading();
                     }
@@ -114,6 +126,9 @@ function expandAndCheck(subjects) {
         $('#subjects-div').fadeIn();
         $('#loader').hide();
         $('#success-synopsis').show();
+        $('#success-synopsis a').click(function(){
+            modal.close();
+        })
         window.setTimeout(function(){
             $('#success-synopsis').fadeOut();
         },10000); 
@@ -159,9 +174,7 @@ function showSubjectSelector(subjectsSelected) {
         }, function () {});
     $("#loader").hide();
     $('<div id="subjects-div"></div>').appendTo('#synopsis');
-    $('#subjects-div').append("<div id='success-synopsis' style='text-align:center; display:none'>&#10004; Data Stored. <a href='" + 
-        chrome.extension.getURL('src/page_action/page_action.html') + 
-        "'>Click Here</a> to go to Synopsis!</div><br/>");
+    $('#subjects-div').append("<div id='success-synopsis' style='text-align:center; display:none'>&#10004; Data Stored. <a href='#'>Click Here</a> to close this popup!</div><br/>");
     $('#subjects-div').append("<div style='text-align:center'>What subjects are you doing this semester?</div><" +
             "br />");
     //VALUE IS DIFFERENT FROM THE THING SHOWN!
@@ -200,7 +213,26 @@ function showSubjectSelector(subjectsSelected) {
 
 }
 
-function renderWaitingForPageLoad(){
+function renderPopup(){
+     
+    // set content
+    modal.setContent('<div id="subjectselector"></div>');    
+    // open modal
+    modal.open();
+    // modal.close();
+    $('#page > *').hide();
+    $('#page').css({padding:"0px", position: "fixed", height: "100%"});
+    $('#page-wrapper').css({paddingBottom:"0px",marginBotton:"0px"});
+    $('#page-wrapper::after').css({content:"none"});
+    $('#page-footer').css({display:"none"}); //floating change subjects button
+    $('#page-wrapper').append('<a href="#" id="changesubjects" style="position: fixed; width: 170px; transform: translateX(50%); height: 60px; z-index:10000;top: 5px; right: 50%; background-color: #0C9; color: #FFF; border-radius: 50px; text-align: center; box-shadow: 2px 2px 3px #999;" class="float"><div style="margin-top:17px">Change Subjects</div></a>')
+    $('#page').css({width:$('body').width()});
+    setInterval(function(){ $('#page').css({width:$('body').width(),height:$('body').height()-72}); }, 200);
+    $('#changesubjects').click(function(){
+        modal.open()
+    });
+
+    $("#page").append('<iframe id="pageaction"  style="width:100%; border:none" height="100%" src="'+ chrome.extension.getURL('src/page_action/page_action.html')+'"></iframe>')
     synopsisbox = "<div id='synopsis'class='card mb-3' style='padding:20px 20px;display:none;background: radial-gradient(circle, rgba(241,240,255,1) 0%, rgba(228,251,244,1) 100%);box-shadow: inset 0px 0px 6px 0px rgba(0,0,0,0.75);'>"+
     "<div id='logo' style='display: -webkit-box;width: fit-content;margin: auto; margin-bottom: 20px;'><a href='"+chrome.extension.getURL('src/page_action/page_action.html')+"'><img style='width:40px' "+
     "src='"+chrome.extension.getURL('img/icon.png')+"' /></a><h1 style='margin-left:25px;text-shadow:0px 0px 9px #ffbd81'><a style='color:#f98012;' href='"
@@ -209,7 +241,8 @@ function renderWaitingForPageLoad(){
         +"<img style='height:100px; margin:auto; display:block' src=" + chrome.extension.getURL('img/spinner.gif') + 
             " /><div id='progress-value' style='text-align:center'>Loading...</div>" +
             "</div></div></div>"
-    $(synopsisbox).insertBefore("#maincontent");
+    
+    $(synopsisbox).appendTo("#subjectselector");
     $('#synopsis').slideDown();
 }
 
@@ -248,7 +281,7 @@ function showSetup(){
 chrome
     .extension
     .sendMessage({}, function (response) {
-        renderWaitingForPageLoad();
+        renderPopup();
         
         var readyStateCheckInterval = setInterval(function () {
             if (document.readyState === "complete") {
@@ -285,6 +318,7 @@ chrome
                             showSubjectSelector([]);
                         } else if (subjectsSelected != null) {
                             showSubjectSelector(subjectsSelected);
+                            modal.close();
                             expandAndCheck(subjectsSelected);
                         }
                     });

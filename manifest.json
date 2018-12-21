@@ -1,7 +1,7 @@
 {
     "name": "Synopsis: Your Moodle Hero",
     "short_name": "Synopsis",
-    "version": "2.0.2",
+    "version": "3.0",
     "manifest_version": 2,
     "description": "This extension lets you create an offline copy of moodle, search for content and seamlessly integrates with your mobile.",
     "content_security_policy": "script-src 'self' https://cdnjs.cloudflare.com https://cdn.firebase.com https://*.firebaseio.com;  object-src 'self'",
@@ -36,8 +36,8 @@
     "content_scripts": [
         {
             "matches": ["https://lms.monash.edu/my/","https://lms.monash.edu/my/index.php"],
-            "js": ["js/jquery/jquery.min.js", "src/inject/inject.js","js/select2.min.js"],
-            "css": ["css/select2.min.css","css/firebaseui.css"]
+            "js": ["js/jquery/jquery.min.js","js/select2.min.js","js/tingle.min.js", "src/inject/inject.js"],
+            "css": ["css/select2.min.css","css/firebaseui.css","css/tingle.min.css"]
         }
     ]
 }

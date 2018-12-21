@@ -14,7 +14,7 @@
 
 chrome.browserAction.onClicked.addListener(function(tab) {
   console.log('button clicked');
-  chrome.tabs.create({'url': chrome.extension.getURL('src/page_action/page_action.html')});
+  chrome.tabs.create({'url': 'https://lms.monash.edu/my/'});
 });
 
 chrome.runtime.setUninstallURL("https://docs.google.com/forms/d/1kOD5hBjqLuWnVon_3rc34N9kjfCgaRHFp-lQZGHGNFg")
@@ -54,7 +54,7 @@ chrome
             .local
             .get(null, function (result) {
 
-                if(result['sendDataOnline']||false){
+                if(result['sendDataOnline']){
 
                   moodleData = result['MoodleBeast'];
                   var dataToSendOnline = {date:new Date()}
@@ -63,27 +63,36 @@ chrome
                       dataToSendOnline[i] = {};
                       html.find('p .item-content-wrap').each(function(){
                         childrenIds = $(this).parent().parent().parent().children('ul').children('li').children('p').toArray().map(function(k){return k.id});
+                        
                         elemId = $(this).parent().parent().attr('id')
+                        elemId = elemId?elemId:"no_id";
+
+                        imgHref = $(this).siblings('img').attr('src');
+                        imgHref = imgHref?imgHref:null;
+                        
                         dataToSendOnline[i][elemId] = {
                           text:$(this).html(),
                           children:childrenIds,
-                          img:$(this).siblings('img').attr('src')
+                          img:imgHref
                         }
                       });
                   })
                   console.log('sending data:');
                   console.log(dataToSendOnline)
                   if (!localStorage.getItem('userid')){
-
                     db.collection("dba").add(dataToSendOnline)
                     .then(function(docRef) {
                         localStorage.setItem('userid', docRef.id);
                         console.log('permanentref= '+ docRef.id);
+                        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                          var tab = tabs[0];
+                          chrome.tabs.update(tab.id, {url: 'https://moodlehero.net/app/user/'+docRef.id});
+                        });
                     })
                     
                   } else {
 
-                    db.collection("dba").doc(localStorage.getItem('userid')).set(moodleData)
+                    db.collection("dba").doc(localStorage.getItem('userid')).set(dataToSendOnline)
                     .then(function(docRef) {
                       console.log('successful overwrite: '+localStorage.getItem('userid'));
                     });
