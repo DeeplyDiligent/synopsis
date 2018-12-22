@@ -1,7 +1,3 @@
-// chrome.storage.onChanged.addListener(function (changes,areaName) {
-// console.log("New item in storage");     console.log(changes); })
-
-
 function downloadSequentially(urls, callback) {
     let index = 0;
     let currentId;
