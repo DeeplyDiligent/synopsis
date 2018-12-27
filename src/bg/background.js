@@ -69,11 +69,15 @@ chrome
 
                         imgHref = $(this).siblings('img').attr('src');
                         imgHref = imgHref?imgHref:null;
+
+                        link = $(this).parent().attr('href');
+                        link = link?link:null;
                         
                         dataToSendOnline[i][elemId] = {
                           text:$(this).html(),
                           children:childrenIds,
-                          img:imgHref
+                          img:imgHref,
+                          link: link
                         }
                       });
                   })

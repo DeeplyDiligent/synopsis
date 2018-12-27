@@ -45,7 +45,6 @@ function openModal(args){
     link = args.link;
     var modal = new tingle.modal({
         footer: true,
-        stickyFooter: true,
         closeMethods: ['overlay', 'button', 'escape'],
         closeLabel: "Close"
     });
